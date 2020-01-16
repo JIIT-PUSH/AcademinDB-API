@@ -1,0 +1,1 @@
+web: gunicorn authentication_db_auth.wsgi --log-file -
