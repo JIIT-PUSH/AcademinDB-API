@@ -12,7 +12,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(unique=True, max_length=15)
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=True)
-    user_type = models.CharField(blank=False, max_length=40)
+    USER_CHOICES = (
+        ('school', 'School'),
+        ('teacher', 'Teacher'),
+        ('government', 'Government Official')
+    )
+    user_type = models.CharField(blank=False, choices=USER_CHOICES, max_length=40)
     data = JSONField()
 
     objects = UserManager()
