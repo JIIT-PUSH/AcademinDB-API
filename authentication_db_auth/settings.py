@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'authentication_db_auth.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'authenticationdb',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost'
+        'NAME': 'd6n4gjei30nv7r',
+        'USER': 'igutrwuvzzdqdz',
+        'PASSWORD': 'a3ad3efe4566a51ccf4716b60635bf290e3163db181b7c7970e819d5da7d9b95',
+        'HOST': 'ec2-34-197-171-33.compute-1.amazonaws.com',
     }
 }
 
