@@ -6,10 +6,6 @@ def create_user_database(user):
     if user['user_type'] == 'school':
         school_database = client.create_database(user['username'])
         user["_id"] = "root:profile"
-        # temp = user['data']
-        # user['data'].pop()
-        # for key in temp:
-        #     user.add(key,value)
         school_profile = school_database.create_document(user)
 
     if user['user_type'] == 'teacher':
