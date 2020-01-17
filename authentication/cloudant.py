@@ -10,7 +10,7 @@ def create_user_database(user):
 
     if user['user_type'] == 'teacher':
         user["_id"] = "teacher:" + user["username"]
-        teacher_database = client[user["data"]["school_code"]]
+        teacher_database = client[user["schoolcode"]]
         teacher_profile = teacher_database.create_document(user)
 
     client.disconnect()
