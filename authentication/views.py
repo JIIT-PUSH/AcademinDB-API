@@ -14,14 +14,15 @@ class Register(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data['data']
         profile = {
             "username": serializer.validated_data['username'],
             "name": serializer.validated_data['name'],
-            "data": serializer.validated_data['data'],
             "user_type": serializer.validated_data['user_type'],
             "phoneNumber": serializer.validated_data['phone'],
             "emailAddress": serializer.validated_data['email'],
         }
+        profile.update(data)
         create_user_database(profile)
         serializer.save()
 
