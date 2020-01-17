@@ -18,9 +18,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         return instance
 
 class LoginSerializer(serializers.Serializer):
+    error = serializers.BooleanField(read_only=True)
+    message = serializers.CharField(max_length=120, read_only=True)
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
+
 
     def validate(self, data):
         username = data.get('username', None)
@@ -42,6 +45,8 @@ class LoginSerializer(serializers.Serializer):
             )
 
         return {
+            'error': False,
+            'message': 'Login Successful',
             'username':user.username,
             'token':user.token
         }
