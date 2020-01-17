@@ -1,4 +1,6 @@
 from cloudant.client import Cloudant
+from cloudant.client import Document
+
 
 def create_user_database(user):
     client = Cloudant('869a3a9a-8356-4ae9-8dbf-06e2f727e1ba-bluemix', '76147209959e786263adc8636eb25e3e61edeb63e68d1b7aa0bd183690f2808f', url='https://869a3a9a-8356-4ae9-8dbf-06e2f727e1ba-bluemix.cloudant.com', connect=True, auto_renew=True)
@@ -7,10 +9,23 @@ def create_user_database(user):
         school_database = client.create_database(user['username'])
         user["_id"] = "root:profile"
         school_profile = school_database.create_document(user)
+        schools_database = client['schools']
+        # schools_list_document = schools_database[user['subdistrict']]
+        with Document(schools_database, user["subdistrict"]) as document:
+            document['schools'].update({
 
-    if user['user_type'] == 'teacher':
+                "name": user["name"],
+                "code": user["schoolcode"]
+            })
+
+    elif user['user_type'] == 'teacher':
         user["_id"] = "teacher:" + user["username"]
         teacher_database = client[user["schoolcode"]]
         teacher_profile = teacher_database.create_document(user)
+
+    elif user['user_type'] == 'student':
+        user["_id"] = "student:" + user["username"]
+        student_database = client[user["schoolcode"]]
+        student_profile = student_database.create_document(user)
 
     client.disconnect()
