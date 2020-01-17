@@ -37,6 +37,16 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 'A Password is required to log in.'
             )
+        usernameVerified = User.objects.get(username=username)
+        if usernameVerified is none:
+            raise serializers.ValidationError(
+                'Username not found, please consider registration first'
+        )
+
+        if not User.check_password(password):
+            raise serializers.ValidationError(
+                'Password Invalid'
+        )
 
         user = authenticate(username=username, password=password)
         if user is None:
