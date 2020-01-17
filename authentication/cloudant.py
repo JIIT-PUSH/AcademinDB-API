@@ -1,5 +1,5 @@
 from cloudant.client import Cloudant
-from cloudant.client import Document
+from cloudant.document import Document
 
 
 def create_user_database(user):
