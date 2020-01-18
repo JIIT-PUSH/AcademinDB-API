@@ -13,6 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=True)
     USER_CHOICES = (
+        ('student', 'Student'),
         ('school', 'School'),
         ('teacher', 'Teacher'),
         ('government', 'Government Official')

@@ -30,19 +30,27 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password', None)
 
         if username is None:
-            raise serializers.ValidationError(
-                'A Username is required to log in.'
-            )
+            raise serializers.ValidationError('A Username is required to log in.')
         if password is None:
-            raise serializers.ValidationError(
-                'A Password is required to log in.'
-            )
+            raise serializers.ValidationError('A Password is required to log in.')
+        
+        if User.objects.filter(username=username).exists():
+            user = authenticate(username=username, password=password)
+            if user is None:
+                raise serializers.ValidationError('Invalid Password')
+        else:
+            raise serializers.ValidationError('Username not Found. Consider Registring First')
 
-        user = authenticate(username=username, password=password)
-        if user is None:
-            raise serializers.ValidationError(
-                'A user with this username and password was not found.'
-            )
+        # if not User.check_password(password=password):
+        #     raise serializers.ValidationError(
+        #         'Password Invalid'
+        # )
+
+        # user = authenticate(username=username, password=password)
+        # if user is None:
+        #     raise serializers.ValidationError(
+        #         'A user with this username and password was not found.'
+        #     )
 
         return {
             'error': False,
