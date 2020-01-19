@@ -25,9 +25,8 @@ def create_user_database(user):
         teacher_division = school_database.create_document(teacher_division_data)
 
         schools_database = client['schools']
-        with Document(schools_database, user["subdistrict"]) as document:
-            document['schools'].update({
-
+        with Document(schools_database, user["subDistrict"]) as document:
+            document['schools'].append({
                 "name": user["name"],
                 "code": user["schoolcode"]
             })
