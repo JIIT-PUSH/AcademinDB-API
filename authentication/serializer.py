@@ -23,7 +23,7 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
-
+    data = serializers.JSONField(read_only=True)
 
     def validate(self, data):
         username = data.get('username', None)
@@ -40,22 +40,21 @@ class LoginSerializer(serializers.Serializer):
                 raise serializers.ValidationError('Invalid Password')
         else:
             raise serializers.ValidationError('Username not Found. Consider Registring First')
+        
+        if user.user_type == 'teacher' or user.user_type == 'student':
+            return {
+                'error': False,
+                'message': 'Login Successful',
+                'username':user.username,
+                'token':user.token,
+                'schoolcode':user.data
+                }
 
-        # if not User.check_password(password=password):
-        #     raise serializers.ValidationError(
-        #         'Password Invalid'
-        # )
-
-        # user = authenticate(username=username, password=password)
-        # if user is None:
-        #     raise serializers.ValidationError(
-        #         'A user with this username and password was not found.'
-        #     )
-
-        return {
-            'error': False,
-            'message': 'Login Successful',
-            'username':user.username,
-            'token':user.token
-        }
+        elif user.user_type == 'school':
+            return {
+                'error': False,
+                'message': 'Login Successful',
+                'username':user.username,
+                'token':user.token
+                }
 
