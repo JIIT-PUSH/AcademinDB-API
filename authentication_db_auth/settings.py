@@ -69,13 +69,6 @@ WSGI_APPLICATION = 'authentication_db_auth.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -83,6 +76,7 @@ DATABASES = {
         'USER': 'occcouehaukzjn',
         'PASSWORD': 'f9c207ffac98d2276c44d6b367ad49c333c85efca26de698cc57e02b721829c6',
         'HOST': 'ec2-54-174-221-35.compute-1.amazonaws.com',
+        'CONN_MAX_AGE': 500
     }
 }
 
@@ -139,3 +133,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 import django_heroku
 django_heroku.settings(locals())
+
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+
+# import dj_database_url
+# db_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(db_from_env)

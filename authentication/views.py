@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from authentication.models import User
-from authentication.cloudant import create_user_database
+from authentication.cloudant import create_user_database#, validate_teacher_and_student
 
 class Register(APIView):
     permission_classes = (AllowAny,)
@@ -19,10 +19,11 @@ class Register(APIView):
             "username": serializer.validated_data['username'],
             "name": serializer.validated_data['name'],
             "user_type": serializer.validated_data['user_type'],
-            "phoneNumber": serializer.validated_data['phone'],
-            "emailAddress": serializer.validated_data['email'],
+            "phone": serializer.validated_data['phone'],
+            "email": serializer.validated_data['email'],
         }
         profile.update(data)
+        #validate_teacher_and_student(profile)
         create_user_database(profile)
         serializer.save()
 
