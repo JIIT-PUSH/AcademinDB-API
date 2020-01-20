@@ -19,8 +19,8 @@ class Register(APIView):
             "username": serializer.validated_data['username'],
             "name": serializer.validated_data['name'],
             "user_type": serializer.validated_data['user_type'],
-            "phone": serializer.validated_data['phone'],
-            "email": serializer.validated_data['email'],
+            "phoneNumber": serializer.validated_data['phone'],
+            "emailAddress": serializer.validated_data['email'],
         }
         profile.update(data)
         #validate_teacher_and_student(profile)
