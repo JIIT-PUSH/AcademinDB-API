@@ -37,7 +37,10 @@ def create_user_database(user):
     elif user['user_type'] == 'teacher':
         teacher_id = user['username']
         user.pop('username')
-        school = client[user["schoolcode"]]
+        try:
+            school = client[user["schoolcode"]]
+        except:
+            raise serializers.ValidationError('School does not exist.')
         teacher_search = "teacher:" + teacher_id
         if not teacher_search in school:
             raise serializers.ValidationError('You are not registered in school records. Please contact School Administration')

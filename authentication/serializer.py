@@ -47,7 +47,7 @@ class LoginSerializer(serializers.Serializer):
                 'message': 'Login Successful',
                 'username':user.username,
                 'token':user.token,
-                'schoolcode':user.data
+                'schoolcode':user.data['schoolcode']
                 }
 
         elif user.user_type == 'school':
