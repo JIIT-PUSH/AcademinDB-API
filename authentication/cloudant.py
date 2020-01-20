@@ -45,8 +45,8 @@ def create_user_database(user):
             teacher = school[teacher_search]
             if teacher["name"] == user['name']:
                 if teacher["dob"] == user['dob']:
-                    if teacher["phoneNumber"] == user['phoneNumber']:
-                        if teacher["emailAddress"] == user['emailAddress']:
+                    if teacher["phone"] == user['phoneNumber']:
+                        if teacher["email"] == user['emailAddress']:
                             pass
                         else:
                             raise serializers.ValidationError('Email Address does not match')
