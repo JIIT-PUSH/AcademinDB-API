@@ -1,11 +1,13 @@
-from authentication.serializer import RegisterSerializer, LoginSerializer
+from authentication.serializer import RegisterSerializer, LoginSerializer, UpdateProfileSerializer
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from authentication.models import User
-from authentication.cloudant import create_user_database#, validate_teacher_and_student
+from authentication.cloudant import create_user_database
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import permissions
 
 class Register(APIView):
     permission_classes = (AllowAny,)
@@ -23,7 +25,6 @@ class Register(APIView):
             "emailAddress": serializer.validated_data['email'],
         }
         profile.update(data)
-        #validate_teacher_and_student(profile)
         create_user_database(profile)
         serializer.save()
 
@@ -39,3 +40,29 @@ class Login(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class UserIsOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.id == request.user.id
+
+class Update(RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated, UserIsOwnerOrReadOnly)
+    serializer_class = UpdateProfileSerializer
+    parser_classes = (MultiPartParser, FormParser,)
+    queryset = User.objects.all()
+
+    def get_object(self):
+        username = self.kwargs["username"]
+        name = self.kwargs["name"]
+        phone = self.kwargs["phone"]
+        email = self.kwargs["email"]
+        data = self.kwargs["data"]
+        obj = get_object_or_404(User, username=username)
+        return obj
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)

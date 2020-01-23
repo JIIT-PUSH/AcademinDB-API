@@ -56,5 +56,19 @@ class LoginSerializer(serializers.Serializer):
                 'message': 'Login Successful',
                 'username':user.username,
                 'token':user.token
-                }
+                } 
+                
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=128, write_only=True)
+    class Meta:
+        model = User
+        fields = ['name', 'username', 'phone', 'data', 'email']
 
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username',instance.username)
+        instance.name = validated_data.get('name',instance.name)
+        instance.phone = validated_data.get('phone',instance.phone)
+        instance.email = validated_data.get('email',instance.email)
+        instance.data = validated_data.get('data',instance.data)
+        return instance 
