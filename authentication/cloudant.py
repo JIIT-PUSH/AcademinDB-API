@@ -10,10 +10,16 @@ def create_user_database(user):
     if user['user_type'] == 'school':
         username = user['username']
         user.pop('username')
-        school_database = client.create_database(username)
+          
+        try:
+            school_database = client['username']
+        except:
+            raise serializers.ValidationError('School does not exist.')
+        #school_database = client.create_database(username)
         user["_id"]= "root:profile"
         user["schoolcode"]: username
         school_profile = school_database.create_document(user)
+        
         class_data ={
             '_id':'root:class_list',
             'class_list':[]

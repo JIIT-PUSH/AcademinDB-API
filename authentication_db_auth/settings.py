@@ -73,26 +73,26 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dfrb8gk52gnvb0',
-#         'USER': 'occcouehaukzjn',
-#         'PASSWORD': 'f9c207ffac98d2276c44d6b367ad49c333c85efca26de698cc57e02b721829c6',
-#         'HOST': 'ec2-54-174-221-35.compute-1.amazonaws.com',
-#         'CONN_MAX_AGE': 500
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'authenticationdb',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
+        'NAME': 'dfrb8gk52gnvb0',
+        'USER': 'occcouehaukzjn',
+        'PASSWORD': 'f9c207ffac98d2276c44d6b367ad49c333c85efca26de698cc57e02b721829c6',
+        'HOST': 'ec2-54-174-221-35.compute-1.amazonaws.com',
+        'CONN_MAX_AGE': 500
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'authenticationdb',
+#         'USER': 'postgres',
+#         'PASSWORD': '1234',
+#         'HOST': 'localhost',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
