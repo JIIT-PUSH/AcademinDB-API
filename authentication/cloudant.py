@@ -91,3 +91,40 @@ def create_user_database(user):
                 raise serializers.ValidationError('Name does not match') 
 
     client.disconnect()
+
+def update_database(user):
+    client = Cloudant('869a3a9a-8356-4ae9-8dbf-06e2f727e1ba-bluemix', '76147209959e786263adc8636eb25e3e61edeb63e68d1b7aa0bd183690f2808f', url='https://869a3a9a-8356-4ae9-8dbf-06e2f727e1ba-bluemix.cloudant.com', connect=True, auto_renew=True)
+    session = client.session()
+
+    if user['user_type'] == 'school':
+        school_database = client("user['username']")
+        root_document = school_database['root:profile']
+
+        root_document['phone'] = user['phoneNumber']
+        root_document['email'] = user['emailAddress']
+        root_document['principal'] = user['principal']
+        root_document['teacherCount'] = user['teacherCount']
+
+    if user['user_type'] == 'teacher':
+        school_database = client("user['schoolCode']")
+        teacher_document = school_database['teacher:username']
+
+        teacher_document['dob'] = user['dob']
+        teacher_document['phone'] = user['phoneNumber']
+        teacher_document['email'] = user['emailAddress']
+        teacher_document['address'] = user['address']
+        teacher_document['pincode'] = user['pincode']
+
+    if user['user_type'] == 'student':
+        school_database = client("user['schoolCode']")
+        student_document = school_database['student:username']
+
+        student_document['dob'] = user['dob']
+        student_document['phone'] = user['phoneNumber']
+        student_document['email'] = user['emailAddress']
+        student_document['address'] = user['address']
+        student_document['transport'] = user['transport']
+        student_document['father_name'] = user['father_name']
+        student_document['mother_name'] = user['mother_name']
+
+    client.disconnect()
