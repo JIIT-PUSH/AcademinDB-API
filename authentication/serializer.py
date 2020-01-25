@@ -9,6 +9,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['name', 'username', 'phone', 'data', 'user_type', 'email', 'password', 'token']
         read_only_fields = ('token',)
+
     def create(self, validated_data):
         password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
@@ -23,7 +24,7 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
     token = serializers.CharField(max_length=255, read_only=True)
-    data = serializers.JSONField(read_only=True)
+    schoolcode = serializers.CharField(read_only=True)
 
     def validate(self, data):
         username = data.get('username', None)
@@ -59,16 +60,23 @@ class LoginSerializer(serializers.Serializer):
                 } 
                 
 class UpdateProfileSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=255)
+    username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
     class Meta:
         model = User
         fields = ['name', 'username', 'phone', 'data', 'email']
 
     def update(self, instance, validated_data):
-        instance.username = validated_data.get('username',instance.username)
         instance.name = validated_data.get('name',instance.name)
         instance.phone = validated_data.get('phone',instance.phone)
         instance.email = validated_data.get('email',instance.email)
         instance.data = validated_data.get('data',instance.data)
         return instance 
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate(self,value):
+        validate_password(value)
+        return value

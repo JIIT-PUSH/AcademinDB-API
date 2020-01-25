@@ -1,4 +1,4 @@
-from authentication.serializer import RegisterSerializer, LoginSerializer, UpdateProfileSerializer
+from authentication.serializer import RegisterSerializer, LoginSerializer, UpdateProfileSerializer, ChangePasswordSerializer
 from rest_framework import status
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
@@ -12,6 +12,7 @@ from rest_framework import permissions
 class Register(APIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+    queryset = User.objects.all()
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -47,22 +48,64 @@ class UserIsOwnerOrReadOnly(permissions.BasePermission):
         return obj.id == request.user.id
 
 class Update(RetrieveUpdateAPIView):
-    permission_classes = (IsAuthenticated, UserIsOwnerOrReadOnly)
+    permission_classes = (IsAuthenticated, )
     serializer_class = UpdateProfileSerializer
-    parser_classes = (MultiPartParser, FormParser,)
     queryset = User.objects.all()
 
-    def get_object(self):
-        username = self.kwargs["username"]
-        name = self.kwargs["name"]
-        phone = self.kwargs["phone"]
-        email = self.kwargs["email"]
-        data = self.kwargs["data"]
-        obj = get_object_or_404(User, username=username)
-        return obj
+    def get_object(self, pk):
+        try:
+            return User.objects.get(pk='username')
+        except User.DoesNotExist:
+            raise Http404
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    def get(self, request, pk, format=None):
+        user = self.get_object(pk)
+        serializer = UpdateProfileSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        user = self.get_object(pk)
+        serializer = UpdateProfileSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    # def get_object(self):
+    #     username = self.kwargs["username"]
+    #     name = self.kwargs["name"]
+    #     phone = self.kwargs["phone"]
+    #     email = self.kwargs["email"]
+    #     data = self.kwargs["data"]
+    #     obj = get_object_or_404(User, username=username)
+    #     return obj
+
+    # def delete(self, request, *args, **kwargs):
+    #     return self.destroy(request, *args, **kwargs)
+
+    # def put(self, request, *args, **kwargs):
+    #     return self.update(request, *args, **kwargs)
+
+class ChangePassword(RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated, UserIsOwnerOrReadOnly)
+    serializer_class = ChangePasswordSerializer
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        self.object = self.get_object()
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            old_password = serializer.data.get("old_password")
+            if not self.object.check_password(old_password):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
